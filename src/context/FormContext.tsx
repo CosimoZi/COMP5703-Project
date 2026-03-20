@@ -1,0 +1,100 @@
+import {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  type ReactNode,
+  type Dispatch,
+} from 'react'
+
+export interface FormState {
+  length: string
+  height: string
+  activeQuoteName: string
+}
+
+type FormAction =
+  | { type: 'SET_FIELD'; field: keyof FormState; value: string }
+  | { type: 'LOAD'; state: FormState }
+  | { type: 'RESET' }
+
+const initialState: FormState = {
+  length: '',
+  height: '',
+  activeQuoteName: '',
+}
+
+const STORAGE_KEY = 'fence-calculator-form'
+
+function canUseStorage(): boolean {
+  try {
+    const consent = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('CookieConsent='))
+    if (consent?.includes('false')) return false
+    return true
+  } catch {
+    return false
+  }
+}
+
+function loadState(): FormState {
+  if (!canUseStorage()) return initialState
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      return { ...initialState, ...parsed }
+    }
+  } catch {
+    // ignore
+  }
+  return initialState
+}
+
+function saveState(state: FormState) {
+  if (!canUseStorage()) return
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+  } catch {
+    // ignore
+  }
+}
+
+function formReducer(state: FormState, action: FormAction): FormState {
+  switch (action.type) {
+    case 'SET_FIELD':
+      return { ...state, [action.field]: action.value }
+    case 'LOAD':
+      return { ...action.state }
+    case 'RESET':
+      return { ...initialState }
+    default:
+      return state
+  }
+}
+
+const FormContext = createContext<{
+  state: FormState
+  dispatch: Dispatch<FormAction>
+} | null>(null)
+
+export function FormProvider({ children }: { children: ReactNode }) {
+  const [state, dispatch] = useReducer(formReducer, initialState, loadState)
+
+  useEffect(() => {
+    saveState(state)
+  }, [state])
+
+  return (
+    <FormContext.Provider value={{ state, dispatch }}>
+      {children}
+    </FormContext.Provider>
+  )
+}
+
+export function useFormContext() {
+  const ctx = useContext(FormContext)
+  if (!ctx) throw new Error('useFormContext must be used inside FormProvider')
+  return ctx
+}

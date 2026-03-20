@@ -1,0 +1,80 @@
+{
+  "app": {
+    "title": "围栏成本计算器",
+    "subtitle": "估算您的围栏项目成本"
+  },
+  "nav": {
+    "myQuotes": "我的报价",
+    "language": "语言"
+  },
+  "steps": {
+    "start": "开始",
+    "length": "长度",
+    "height": "高度",
+    "cost": "费用"
+  },
+  "common": {
+    "back": "返回",
+    "next": "下一步"
+  },
+  "start": {
+    "heading": "欢迎",
+    "description": "此工具帮助您估算围栏项目的成本。输入围栏尺寸即可获得即时报价。",
+    "getStarted": "开始使用"
+  },
+  "length": {
+    "heading": "围栏长度",
+    "description": "您需要多长的围栏？",
+    "label": "围栏长度",
+    "unit": "米",
+    "placeholder": "输入长度（米）"
+  },
+  "height": {
+    "heading": "围栏高度",
+    "description": "请选择围栏的高度。",
+    "label": "围栏高度",
+    "unit": "米",
+    "placeholder": "选择高度",
+    "calculate": "计算费用"
+  },
+  "cost": {
+    "heading": "费用估算",
+    "description": "以下是您的围栏成本明细。",
+    "breakdown": "成本明细",
+    "fenceLength": "围栏长度",
+    "fenceHeight": "围栏高度",
+    "area": "总面积",
+    "unitPrice": "单价",
+    "totalCost": "预估总费用",
+    "perSqm": "每平方米",
+    "meters": "米",
+    "sqm": "平方米",
+    "disclaimer": "这仅为估算值。实际成本可能因材料、人工和现场条件而异。",
+    "saveQuote": "保存报价",
+    "startOver": "重新开始",
+    "back": "返回"
+  },
+  "quotes": {
+    "title": "我的已保存报价",
+    "empty": "暂无已保存的报价。创建一个成本估算并保存吧！",
+    "load": "加载",
+    "delete": "删除",
+    "close": "关闭",
+    "saved": "报价已保存！",
+    "willOverwrite": "已存在同名报价，保存后将覆盖原有内容。",
+    "namePrompt": "报价名称",
+    "namePlaceholder": "例如：后院围栏",
+    "save": "保存",
+    "cancel": "取消",
+    "length": "长度",
+    "height": "高度",
+    "total": "总计",
+    "date": "日期",
+    "confirmDelete": "确定要删除这个报价吗？"
+  },
+  "cookie": {
+    "message": "本网站使用 Cookie 和本地存储来保存您的偏好设置和项目数据。",
+    "accept": "接受",
+    "decline": "拒绝"
+  }
+}
