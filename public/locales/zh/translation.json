@@ -9,8 +9,9 @@
   },
   "steps": {
     "start": "开始",
-    "length": "长度",
-    "height": "高度",
+    "dimensions": "尺寸",
+    "bond": "样式",
+    "brickSize": "砖块",
     "cost": "费用"
   },
   "common": {
@@ -19,22 +20,36 @@
   },
   "start": {
     "heading": "欢迎",
-    "description": "此工具帮助您估算围栏项目的成本。输入围栏尺寸即可获得即时报价。",
+    "description": "此工具帮助您估算砖墙围栏项目的成本。逐步配置您的围栏并获得即时报价。",
     "getStarted": "开始使用"
   },
-  "length": {
-    "heading": "围栏长度",
-    "description": "您需要多长的围栏？",
-    "label": "围栏长度",
+  "dimensions": {
+    "heading": "墙体尺寸",
+    "description": "输入围栏的总长度和高度。",
+    "length": "围栏长度",
+    "height": "围栏高度",
     "unit": "米",
-    "placeholder": "输入长度（米）"
+    "lengthPlaceholder": "输入长度（米）",
+    "heightPlaceholder": "输入高度（米）",
+    "maxHeightError": "高度不能超过 {{max}} 米"
   },
-  "height": {
-    "heading": "围栏高度",
-    "description": "请选择围栏的高度。",
-    "label": "围栏高度",
-    "unit": "米",
-    "placeholder": "选择高度",
+  "bond": {
+    "heading": "砌筑样式",
+    "description": "选择围栏的砖块砌筑样式。",
+    "stretcher": "顺砖砌法",
+    "stretcherDesc": "最常见的砌法。每行砖块错开半块。",
+    "english": "英式砌法",
+    "englishDesc": "顺砖行与丁砖行交替排列，非常坚固。",
+    "flemish": "佛兰德砌法",
+    "flemishDesc": "每行中顺砖与丁砖交替排列，外观经典。"
+  },
+  "brickSize": {
+    "heading": "砖块尺寸",
+    "description": "设置砖块的尺寸（单位：厘米）。",
+    "stretcherLength": "顺砖长度",
+    "brickHeight": "砖块高度",
+    "headerWidth": "丁砖宽度",
+    "unit": "厘米",
     "calculate": "计算费用"
   },
   "cost": {
@@ -43,6 +58,7 @@
     "breakdown": "成本明细",
     "fenceLength": "围栏长度",
     "fenceHeight": "围栏高度",
+    "bondPattern": "砌筑样式",
     "area": "总面积",
     "unitPrice": "单价",
     "totalCost": "预估总费用",
@@ -51,8 +67,7 @@
     "sqm": "平方米",
     "disclaimer": "这仅为估算值。实际成本可能因材料、人工和现场条件而异。",
     "saveQuote": "保存报价",
-    "startOver": "重新开始",
-    "back": "返回"
+    "startOver": "重新开始"
   },
   "quotes": {
     "title": "我的已保存报价",

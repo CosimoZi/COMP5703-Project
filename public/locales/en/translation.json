@@ -9,8 +9,9 @@
   },
   "steps": {
     "start": "Start",
-    "length": "Length",
-    "height": "Height",
+    "dimensions": "Dimensions",
+    "bond": "Pattern",
+    "brickSize": "Brick Size",
     "cost": "Cost"
   },
   "common": {
@@ -19,22 +20,36 @@
   },
   "start": {
     "heading": "Welcome",
-    "description": "This tool helps you estimate the cost of your fencing project. Enter your fence dimensions and get an instant quote.",
+    "description": "This tool helps you estimate the cost of your brick fencing project. Configure your fence step by step and get an instant quote.",
     "getStarted": "Get Started"
   },
-  "length": {
-    "heading": "Fence Length",
-    "description": "How long is the fence you need?",
-    "label": "Fence Length",
+  "dimensions": {
+    "heading": "Wall Dimensions",
+    "description": "Enter the overall length and height of your fence.",
+    "length": "Fence Length",
+    "height": "Fence Height",
     "unit": "meters",
-    "placeholder": "Enter length in meters"
+    "lengthPlaceholder": "Enter length in meters",
+    "heightPlaceholder": "Enter height in meters",
+    "maxHeightError": "Height cannot exceed {{max}}m"
   },
-  "height": {
-    "heading": "Fence Height",
-    "description": "Select the height for your fence.",
-    "label": "Fence Height",
-    "unit": "meters",
-    "placeholder": "Select height",
+  "bond": {
+    "heading": "Bond Pattern",
+    "description": "Choose a brick bond pattern for your fence.",
+    "stretcher": "Stretcher Bond",
+    "stretcherDesc": "Most common pattern. Bricks staggered by half in each row.",
+    "english": "English Bond",
+    "englishDesc": "Alternating rows of stretchers and headers. Very strong.",
+    "flemish": "Flemish Bond",
+    "flemishDesc": "Stretchers and headers alternate within each row. Classic look."
+  },
+  "brickSize": {
+    "heading": "Brick Dimensions",
+    "description": "Set the size of your bricks in centimeters.",
+    "stretcherLength": "Stretcher Length",
+    "brickHeight": "Brick Height",
+    "headerWidth": "Header Width",
+    "unit": "cm",
     "calculate": "Calculate Cost"
   },
   "cost": {
@@ -43,6 +58,7 @@
     "breakdown": "Cost Breakdown",
     "fenceLength": "Fence Length",
     "fenceHeight": "Fence Height",
+    "bondPattern": "Bond Pattern",
     "area": "Total Area",
     "unitPrice": "Unit Price",
     "totalCost": "Total Estimated Cost",
@@ -51,8 +67,7 @@
     "sqm": "m²",
     "disclaimer": "This is an estimate only. Actual costs may vary based on materials, labor, and site conditions.",
     "saveQuote": "Save Quote",
-    "startOver": "Start Over",
-    "back": "Back"
+    "startOver": "Start Over"
   },
   "quotes": {
     "title": "My Saved Quotes",

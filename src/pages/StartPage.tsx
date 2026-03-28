@@ -26,7 +26,7 @@ export default function StartPage() {
         </p>
 
         <button
-          onClick={() => navigate('/length')}
+          onClick={() => navigate('/dimensions')}
           className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-8 rounded-xl transition-colors shadow-sm cursor-pointer"
         >
           {t('start.getStarted')}

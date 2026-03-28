@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Stepper from '../components/Stepper'
+import FenceDiagram from '../components/FenceDiagram'
 import { useFormContext } from '../context/FormContext'
 
 const UNIT_PRICE = 50
@@ -12,6 +13,10 @@ interface SavedQuote {
   date: string
   length: string
   height: string
+  bondPattern: string
+  brickLength: string
+  brickHeight: string
+  headerWidth: string
   totalCost: number
 }
 
@@ -47,6 +52,11 @@ export default function CostPage() {
   const area = length * height
   const totalCost = area * UNIT_PRICE
 
+  const brickL = parseFloat(state.brickLength) || 23
+  const brickH = parseFloat(state.brickHeight) || 7.6
+  const headerW = parseFloat(state.headerWidth) || 11
+  const needsHeader = state.bondPattern === 'english' || state.bondPattern === 'flemish'
+
   const openSaveDialog = () => {
     setQuoteName(state.activeQuoteName ?? '')
     setShowSaveDialog(true)
@@ -61,6 +71,10 @@ export default function CostPage() {
       date: new Date().toLocaleDateString(),
       length: state.length,
       height: state.height,
+      bondPattern: state.bondPattern,
+      brickLength: state.brickLength,
+      brickHeight: state.brickHeight,
+      headerWidth: state.headerWidth,
       totalCost,
     }
     upsertQuote(quote)
@@ -76,25 +90,36 @@ export default function CostPage() {
     navigate('/')
   }
 
-  const missingData = !length || !height
+  const missingData = !length || !height || !state.bondPattern
 
   useEffect(() => {
-    if (missingData) navigate('/height', { replace: true })
+    if (missingData) navigate('/brick-size', { replace: true })
   }, [missingData, navigate])
 
   if (missingData) return null
 
   return (
     <div className="flex flex-col items-center">
-      <Stepper currentStep={3} />
+      <Stepper currentStep={4} />
 
       <div className="w-full max-w-lg bg-white rounded-2xl shadow-sm border border-border p-8">
         <h1 className="text-2xl font-bold text-text mb-2">
           {t('cost.heading')}
         </h1>
-        <p className="text-text-muted mb-8">
+        <p className="text-text-muted mb-6">
           {t('cost.description')}
         </p>
+
+        <div className="mb-6 rounded-xl border border-border overflow-hidden">
+          <FenceDiagram
+            lengthM={length}
+            heightM={height}
+            bondPattern={state.bondPattern}
+            brickLengthCm={brickL}
+            brickHeightCm={brickH}
+            headerWidthCm={needsHeader ? headerW : undefined}
+          />
+        </div>
 
         <div className="bg-surface-alt rounded-xl border border-border overflow-hidden">
           <div className="px-6 py-4 border-b border-border">
@@ -103,6 +128,7 @@ export default function CostPage() {
           <div className="divide-y divide-border">
             <Row label={t('cost.fenceLength')} value={`${length} ${t('cost.meters')}`} />
             <Row label={t('cost.fenceHeight')} value={`${height} ${t('cost.meters')}`} />
+            <Row label={t('cost.bondPattern')} value={t(`bond.${state.bondPattern}`)} />
             <Row label={t('cost.area')} value={`${area.toFixed(1)} ${t('cost.sqm')}`} />
             <Row label={t('cost.unitPrice')} value={`$${UNIT_PRICE} ${t('cost.perSqm')}`} />
             <div className="flex justify-between px-6 py-4 bg-primary/5">
@@ -124,7 +150,7 @@ export default function CostPage() {
 
         <div className="flex flex-col sm:flex-row gap-3 mt-8">
           <button
-            onClick={() => navigate('/height')}
+            onClick={() => navigate('/brick-size')}
             className="inline-flex items-center justify-center gap-2 text-text-muted hover:text-text font-medium py-3 px-6 rounded-xl transition-colors cursor-pointer"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

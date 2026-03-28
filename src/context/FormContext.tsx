@@ -10,6 +10,10 @@ import {
 export interface FormState {
   length: string
   height: string
+  bondPattern: string
+  brickLength: string
+  brickHeight: string
+  headerWidth: string
   activeQuoteName: string
 }
 
@@ -21,6 +25,10 @@ type FormAction =
 const initialState: FormState = {
   length: '',
   height: '',
+  bondPattern: '',
+  brickLength: '23',
+  brickHeight: '7.6',
+  headerWidth: '11',
   activeQuoteName: '',
 }
 

@@ -7,8 +7,9 @@ interface StepperProps {
 
 const steps = [
   { key: 'start', path: '/' },
-  { key: 'length', path: '/length' },
-  { key: 'height', path: '/height' },
+  { key: 'dimensions', path: '/dimensions' },
+  { key: 'bond', path: '/bond' },
+  { key: 'brickSize', path: '/brick-size' },
   { key: 'cost', path: '/cost' },
 ] as const
 
@@ -23,7 +24,7 @@ export default function Stepper({ currentStep }: StepperProps) {
   }
 
   return (
-    <div className="flex items-center justify-center gap-0 w-full max-w-xl mx-auto mb-8">
+    <div className="flex items-center justify-center gap-0 w-full max-w-2xl mx-auto mb-8">
       {steps.map(({ key }, index) => {
         const isCompleted = index < currentStep
         const isCurrent = index === currentStep

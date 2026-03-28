@@ -6,8 +6,9 @@ import LanguageSwitcher from './components/LanguageSwitcher'
 import CookieConsentBanner from './components/CookieConsentBanner'
 import QuoteManager from './components/QuoteManager'
 import StartPage from './pages/StartPage'
-import LengthPage from './pages/LengthPage'
-import HeightPage from './pages/HeightPage'
+import DimensionsPage from './pages/DimensionsPage'
+import BondPage from './pages/BondPage'
+import BrickSizePage from './pages/BrickSizePage'
 import CostPage from './pages/CostPage'
 
 function AppContent() {
@@ -39,8 +40,9 @@ function AppContent() {
       <main className="flex-1 max-w-3xl w-full mx-auto px-4 py-8">
         <Routes>
           <Route path="/" element={<StartPage />} />
-          <Route path="/length" element={<LengthPage />} />
-          <Route path="/height" element={<HeightPage />} />
+          <Route path="/dimensions" element={<DimensionsPage />} />
+          <Route path="/bond" element={<BondPage />} />
+          <Route path="/brick-size" element={<BrickSizePage />} />
           <Route path="/cost" element={<CostPage />} />
         </Routes>
       </main>
