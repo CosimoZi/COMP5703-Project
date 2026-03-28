@@ -25,7 +25,7 @@ type FormAction =
 const initialState: FormState = {
   length: '',
   height: '',
-  bondPattern: '',
+  bondPattern: 'stretcher',
   brickLength: '23',
   brickHeight: '7.6',
   headerWidth: '11',

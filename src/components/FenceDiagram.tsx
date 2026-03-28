@@ -5,7 +5,7 @@ const MORTAR_MM = 10
 const DEFAULT_BRICK_L = 230
 const DEFAULT_BRICK_H = 76
 const DEFAULT_HEADER_W = 110
-const CANVAS_MAX_H = 300
+const CANVAS_H = 400
 const BRICK_FILL = '#c1440e'
 const MORTAR_FILL = '#d4d0c8'
 
@@ -26,14 +26,16 @@ interface BrickData {
 }
 
 function generateBricks(
-  wallW: number,
+  viewW: number,
   wallH: number,
   brickL: number,
   brickH: number,
   headerW: number,
   bond: string,
+  startX: number = 0,
 ): BrickData[] {
   const bricks: BrickData[] = []
+  const endX = startX + viewW
   const rows = Math.ceil(wallH / (brickH + MORTAR_MM))
 
   for (let r = 0; r < rows; r++) {
@@ -44,49 +46,57 @@ function generateBricks(
     if (bond === 'english') {
       const isHeaderRow = r % 2 === 1
       const unitW = isHeaderRow ? headerW : brickL
-      const cols = Math.ceil(wallW / (unitW + MORTAR_MM))
-      const offset = isHeaderRow ? (headerW + MORTAR_MM) / 2 : 0
-      for (let c = -1; c <= cols; c++) {
-        const x = c * (unitW + MORTAR_MM) + offset
-        if (x + unitW <= 0 || x >= wallW) continue
-        const clippedX = Math.max(0, x)
-        const clippedW = Math.min(unitW, wallW - clippedX, x + unitW - clippedX)
-        if (clippedW > 0) bricks.push({ x: clippedX, y, w: clippedW, h: rowH })
+      const step = unitW + MORTAR_MM
+      const rowOffset = isHeaderRow ? (headerW + MORTAR_MM) / 2 : 0
+      const firstCol = Math.floor((startX - rowOffset) / step) - 1
+      for (let c = firstCol; ; c++) {
+        const wx = c * step + rowOffset
+        if (wx >= endX) break
+        if (wx + unitW <= startX) continue
+        const localX = Math.max(0, wx - startX)
+        const localRight = Math.min(viewW, wx + unitW - startX)
+        const w = localRight - localX
+        if (w > 0) bricks.push({ x: localX, y, w, h: rowH })
       }
     } else if (bond === 'flemish') {
       const stretcherUnit = brickL + MORTAR_MM
       const headerUnit = headerW + MORTAR_MM
       const pairW = stretcherUnit + headerUnit
+      if (pairW <= 0) continue
       const isOddRow = r % 2 === 1
-      const offset = isOddRow ? (stretcherUnit + headerUnit) / 2 : 0
-      let x = -offset
-      while (x < wallW) {
-        // stretcher
-        if (x + brickL > 0 && x < wallW) {
-          const cx = Math.max(0, x)
-          const cw = Math.min(brickL, wallW - cx, x + brickL - cx)
-          if (cw > 0) bricks.push({ x: cx, y, w: cw, h: rowH })
+      const rowOffset = isOddRow ? pairW / 2 : 0
+      const firstPair = Math.floor((startX - rowOffset) / pairW) - 1
+      for (let p = firstPair; ; p++) {
+        const sxBase = p * pairW + rowOffset
+        if (sxBase >= endX) break
+        const sx = sxBase
+        if (sx + brickL > startX && sx < endX) {
+          const localX = Math.max(0, sx - startX)
+          const localRight = Math.min(viewW, sx + brickL - startX)
+          const w = localRight - localX
+          if (w > 0) bricks.push({ x: localX, y, w, h: rowH })
         }
-        x += stretcherUnit
-        // header
-        if (x + headerW > 0 && x < wallW) {
-          const cx = Math.max(0, x)
-          const cw = Math.min(headerW, wallW - cx, x + headerW - cx)
-          if (cw > 0) bricks.push({ x: cx, y, w: cw, h: rowH })
+        const hx = sxBase + stretcherUnit
+        if (hx + headerW > startX && hx < endX) {
+          const localX = Math.max(0, hx - startX)
+          const localRight = Math.min(viewW, hx + headerW - startX)
+          const w = localRight - localX
+          if (w > 0) bricks.push({ x: localX, y, w, h: rowH })
         }
-        x += headerUnit
-        if (pairW <= 0) break
+        if (sxBase + pairW >= endX) break
       }
     } else {
-      // stretcher bond (default)
-      const cols = Math.ceil(wallW / (brickL + MORTAR_MM))
-      const offset = r % 2 === 1 ? (brickL + MORTAR_MM) / 2 : 0
-      for (let c = -1; c <= cols; c++) {
-        const x = c * (brickL + MORTAR_MM) + offset
-        if (x + brickL <= 0 || x >= wallW) continue
-        const clippedX = Math.max(0, x)
-        const clippedW = Math.min(brickL, wallW - clippedX, x + brickL - clippedX)
-        if (clippedW > 0) bricks.push({ x: clippedX, y, w: clippedW, h: rowH })
+      const step = brickL + MORTAR_MM
+      const rowOffset = r % 2 === 1 ? step / 2 : 0
+      const firstCol = Math.floor((startX - rowOffset) / step) - 1
+      for (let c = firstCol; ; c++) {
+        const wx = c * step + rowOffset
+        if (wx >= endX) break
+        if (wx + brickL <= startX) continue
+        const localX = Math.max(0, wx - startX)
+        const localRight = Math.min(viewW, wx + brickL - startX)
+        const w = localRight - localX
+        if (w > 0) bricks.push({ x: localX, y, w, h: rowH })
       }
     }
   }
@@ -125,16 +135,16 @@ export default function FenceDiagram({
   const headerW = headerWidthCm ? headerWidthCm * 10 : DEFAULT_HEADER_W
   const bond = bondPattern || 'stretcher'
 
-  const canvasH = Math.min(CANVAS_MAX_H, containerWidth * (wallH / wallW) || CANVAS_MAX_H)
-  const scale = canvasH / wallH
+  const scale = CANVAS_H / wallH
 
   const visibleWallW = containerWidth > 0 ? containerWidth / scale : wallW
   const wallFitsInView = wallW <= visibleWallW
   const renderW = Math.min(wallW, visibleWallW)
+  const wallStartX = wallFitsInView ? 0 : (wallW - renderW) / 2
 
   const bricks = useMemo(
-    () => generateBricks(renderW, wallH, brickL, brickH, headerW, bond),
-    [renderW, wallH, brickL, brickH, headerW, bond],
+    () => generateBricks(renderW, wallH, brickL, brickH, headerW, bond, wallStartX),
+    [renderW, wallH, brickL, brickH, headerW, bond, wallStartX],
   )
 
   const offsetX = wallFitsInView ? (containerWidth - wallW * scale) / 2 : 0
@@ -145,7 +155,7 @@ export default function FenceDiagram({
 
   return (
     <div ref={containerRef} className="w-full relative">
-      <Stage width={containerWidth} height={canvasH}>
+      <Stage width={containerWidth} height={CANVAS_H}>
         <Layer>
           <Group x={offsetX}>
             <Rect
@@ -170,7 +180,10 @@ export default function FenceDiagram({
         </Layer>
       </Stage>
       {!wallFitsInView && (
-        <div className="absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+        <>
+          <div className="absolute top-0 left-0 bottom-0 w-12 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+          <div className="absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+        </>
       )}
     </div>
   )
