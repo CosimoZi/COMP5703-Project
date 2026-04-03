@@ -1,73 +1,139 @@
-# React + TypeScript + Vite
+# Fence Cost Calculator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> [Click here for 中文版](#中文)
 
-Currently, two official plugins are available:
+## English
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+A client-side web application for estimating brick fence costs. Built with React + TypeScript + Vite.
 
-## React Compiler
+**Live demo:** https://cosimozi.github.io/COMP5703-Project/
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
 
-## Expanding the ESLint configuration
+- **Node.js v22** (LTS)
+- **npm** (comes with Node.js)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+If you don't have Node.js installed, or have a different version:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1. Install [nvm](https://github.com/nvm-sh/nvm) (Node Version Manager):
+   ```bash
+   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+   ```
+2. Restart your terminal, then run:
+   ```bash
+   nvm install 22
+   nvm use 22
+   ```
+3. Verify:
+   ```bash
+   node -v
+   # should print v22.x.x
+   ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. **Clone the repository**
+   ```bash
+   git clone git@github.com:CosimoZi/COMP5703-Project.git
+   cd COMP5703-Project/fence-calculator
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+   Open the URL shown in the terminal (usually http://localhost:5173/COMP5703-Project/).
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Other Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run build` | Build for production (output in `dist/`) |
+| `npm run preview` | Preview the production build locally |
+| `npm run deploy` | Build and deploy to GitHub Pages |
+| `npm run lint` | Run ESLint |
+
+### Tech Stack
+
+- React 19 + TypeScript
+- Vite (build tool)
+- Tailwind CSS v4
+- react-konva (brick wall diagram)
+- react-i18next (i18n: English / Chinese)
+- react-router-dom (client-side routing)
+- localStorage + cookies (client-side persistence)
+
+---
+
+<a id="中文"></a>
+
+## 中文
+
+一个用于估算砖墙围栏成本的纯前端网页应用。基于 React + TypeScript + Vite 构建。
+
+**在线演示：** https://cosimozi.github.io/COMP5703-Project/
+
+### 环境要求
+
+- **Node.js v22**（LTS 版本）
+- **npm**（随 Node.js 一起安装）
+
+如果你还没有安装 Node.js，或者版本不对：
+
+1. 安装 [nvm](https://github.com/nvm-sh/nvm)（Node 版本管理器）：
+   ```bash
+   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+   ```
+2. 重启终端，然后运行：
+   ```bash
+   nvm install 22
+   nvm use 22
+   ```
+3. 验证版本：
+   ```bash
+   node -v
+   # 应该输出 v22.x.x
+   ```
+
+### 快速开始
+
+1. **克隆仓库**
+   ```bash
+   git clone git@github.com:CosimoZi/COMP5703-Project.git
+   cd COMP5703-Project/fence-calculator
+   ```
+
+2. **安装依赖**
+   ```bash
+   npm install
+   ```
+
+3. **启动开发服务器**
+   ```bash
+   npm run dev
+   ```
+   在浏览器中打开终端显示的地址（通常是 http://localhost:5173/COMP5703-Project/）。
+
+### 其他命令
+
+| 命令 | 说明 |
+|------|------|
+| `npm run build` | 构建生产版本（输出到 `dist/` 目录） |
+| `npm run preview` | 本地预览生产版本 |
+| `npm run deploy` | 构建并部署到 GitHub Pages |
+| `npm run lint` | 运行 ESLint 代码检查 |
+
+### 技术栈
+
+- React 19 + TypeScript
+- Vite（构建工具）
+- Tailwind CSS v4
+- react-konva（砖墙图形渲染）
+- react-i18next（国际化：英文 / 中文）
+- react-router-dom（前端路由）
+- localStorage + cookies（客户端数据持久化）
