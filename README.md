@@ -68,6 +68,20 @@ If you don't have Node.js installed, or have a different version:
 - react-router-dom (client-side routing)
 - localStorage + cookies (client-side persistence)
 
+### Known Issues / Troubleshooting
+
+#### Firefox White Screen Issue
+
+When running the project locally in Firefox, the page may display a white screen.
+
+**Possible solutions:**
+- Ensure the development server is running correctly (`npm run dev`)
+- Check for errors in the browser Developer Tools (Console)
+- Clear browser cache and reload the page
+- Try using Chrome or another browser if the issue persists
+
+This issue has been observed during local development and is documented here for future reference.
+
 ---
 
 <a id="中文"></a>
@@ -137,3 +151,18 @@ If you don't have Node.js installed, or have a different version:
 - react-i18next（国际化：英文 / 中文）
 - react-router-dom（前端路由）
 - localStorage + cookies（客户端数据持久化）
+
+### 常见问题 / 排错
+
+#### Firefox 打开白屏问题
+
+在 Firefox 浏览器中本地运行项目时，可能会出现白屏现象。
+
+**可能的解决方法：**
+- 确认开发服务器正常运行（`npm run dev`）
+- 打开浏览器开发者工具（Console）查看是否有报错
+- 清除浏览器缓存后重新加载页面
+- 若问题仍然存在，建议使用 Chrome 或其他浏览器
+
+该问题在本地开发过程中出现过，记录在此以供后续参考。
+
