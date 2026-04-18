@@ -10,9 +10,6 @@ interface SavedQuote {
   length: string
   height: string
   bondPattern: string
-  brickLength: string
-  brickHeight: string
-  headerWidth: string
   totalCost: number
 }
 
@@ -55,10 +52,11 @@ export default function QuoteManager({ isOpen, onClose }: QuoteManagerProps) {
   const handleLoad = (quote: SavedQuote) => {
     dispatch({ type: 'SET_FIELD', field: 'length', value: quote.length })
     dispatch({ type: 'SET_FIELD', field: 'height', value: quote.height })
-    dispatch({ type: 'SET_FIELD', field: 'bondPattern', value: quote.bondPattern ?? '' })
-    dispatch({ type: 'SET_FIELD', field: 'brickLength', value: quote.brickLength ?? '23' })
-    dispatch({ type: 'SET_FIELD', field: 'brickHeight', value: quote.brickHeight ?? '7.6' })
-    dispatch({ type: 'SET_FIELD', field: 'headerWidth', value: quote.headerWidth ?? '11' })
+    dispatch({
+      type: 'SET_FIELD',
+      field: 'bondPattern',
+      value: quote.bondPattern || 'stretcher',
+    })
     dispatch({ type: 'SET_FIELD', field: 'activeQuoteName', value: quote.name })
     onClose()
     navigate('/cost')

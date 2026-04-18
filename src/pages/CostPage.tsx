@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Stepper from '../components/Stepper'
-import FenceDiagram from '../components/FenceDiagram'
+import WizardLayout from '../components/WizardLayout'
 import { useFormContext } from '../context/FormContext'
 
 const UNIT_PRICE = 50
@@ -14,9 +14,6 @@ interface SavedQuote {
   length: string
   height: string
   bondPattern: string
-  brickLength: string
-  brickHeight: string
-  headerWidth: string
   totalCost: number
 }
 
@@ -52,11 +49,6 @@ export default function CostPage() {
   const area = length * height
   const totalCost = area * UNIT_PRICE
 
-  const brickL = parseFloat(state.brickLength) || 23
-  const brickH = parseFloat(state.brickHeight) || 7.6
-  const headerW = parseFloat(state.headerWidth) || 11
-  const needsHeader = state.bondPattern === 'english' || state.bondPattern === 'flemish'
-
   const openSaveDialog = () => {
     setQuoteName(state.activeQuoteName ?? '')
     setShowSaveDialog(true)
@@ -72,9 +64,6 @@ export default function CostPage() {
       length: state.length,
       height: state.height,
       bondPattern: state.bondPattern,
-      brickLength: state.brickLength,
-      brickHeight: state.brickHeight,
-      headerWidth: state.headerWidth,
       totalCost,
     }
     upsertQuote(quote)
@@ -93,88 +82,80 @@ export default function CostPage() {
   const missingData = !length || !height || !state.bondPattern
 
   useEffect(() => {
-    if (missingData) navigate('/brick-size', { replace: true })
+    if (missingData) navigate('/dimensions', { replace: true })
   }, [missingData, navigate])
 
   if (missingData) return null
 
-  return (
-    <div className="flex flex-col items-center">
-      <Stepper currentStep={4} />
+  const form = (
+    <div className="bg-white rounded-2xl shadow-sm border border-border p-8">
+      <h1 className="text-2xl font-bold text-text mb-2">{t('cost.heading')}</h1>
+      <p className="text-text-muted mb-6">{t('cost.description')}</p>
 
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-sm border border-border p-8">
-        <h1 className="text-2xl font-bold text-text mb-2">
-          {t('cost.heading')}
-        </h1>
-        <p className="text-text-muted mb-6">
-          {t('cost.description')}
-        </p>
-
-        <div className="mb-6 rounded-xl border border-border overflow-hidden">
-          <FenceDiagram
-            lengthM={length}
-            heightM={height}
-            bondPattern={state.bondPattern}
-            brickLengthCm={brickL}
-            brickHeightCm={brickH}
-            headerWidthCm={needsHeader ? headerW : undefined}
-          />
+      <div className="bg-surface-alt rounded-xl border border-border overflow-hidden">
+        <div className="px-6 py-4 border-b border-border">
+          <h2 className="font-semibold text-text">{t('cost.breakdown')}</h2>
         </div>
-
-        <div className="bg-surface-alt rounded-xl border border-border overflow-hidden">
-          <div className="px-6 py-4 border-b border-border">
-            <h2 className="font-semibold text-text">{t('cost.breakdown')}</h2>
+        <div className="divide-y divide-border">
+          <Row label={t('cost.fenceLength')} value={`${length} ${t('cost.meters')}`} />
+          <Row label={t('cost.fenceHeight')} value={`${height} ${t('cost.meters')}`} />
+          <Row label={t('cost.bondPattern')} value={t(`bond.${state.bondPattern}`)} />
+          <Row label={t('cost.area')} value={`${area.toFixed(1)} ${t('cost.sqm')}`} />
+          <Row label={t('cost.unitPrice')} value={`$${UNIT_PRICE} ${t('cost.perSqm')}`} />
+          <div className="flex justify-between px-6 py-4 bg-primary/5">
+            <span className="font-bold text-text">{t('cost.totalCost')}</span>
+            <span className="font-bold text-primary text-lg">${totalCost.toFixed(2)}</span>
           </div>
-          <div className="divide-y divide-border">
-            <Row label={t('cost.fenceLength')} value={`${length} ${t('cost.meters')}`} />
-            <Row label={t('cost.fenceHeight')} value={`${height} ${t('cost.meters')}`} />
-            <Row label={t('cost.bondPattern')} value={t(`bond.${state.bondPattern}`)} />
-            <Row label={t('cost.area')} value={`${area.toFixed(1)} ${t('cost.sqm')}`} />
-            <Row label={t('cost.unitPrice')} value={`$${UNIT_PRICE} ${t('cost.perSqm')}`} />
-            <div className="flex justify-between px-6 py-4 bg-primary/5">
-              <span className="font-bold text-text">{t('cost.totalCost')}</span>
-              <span className="font-bold text-primary text-lg">${totalCost.toFixed(2)}</span>
-            </div>
-          </div>
-        </div>
-
-        <p className="text-xs text-text-muted mt-4 leading-relaxed">
-          {t('cost.disclaimer')}
-        </p>
-
-        {savedMessage && (
-          <div className="mt-4 p-3 bg-green-50 text-green-700 rounded-xl text-sm font-medium text-center">
-            {t('quotes.saved')}
-          </div>
-        )}
-
-        <div className="flex flex-col sm:flex-row gap-3 mt-8">
-          <button
-            onClick={() => navigate('/brick-size')}
-            className="inline-flex items-center justify-center gap-2 text-text-muted hover:text-text font-medium py-3 px-6 rounded-xl transition-colors cursor-pointer"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
-            </svg>
-            {t('common.back')}
-          </button>
-          <button
-            onClick={openSaveDialog}
-            className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm flex-1 cursor-pointer"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-            </svg>
-            {t('cost.saveQuote')}
-          </button>
-          <button
-            onClick={handleStartOver}
-            className="inline-flex items-center justify-center gap-2 border border-border hover:bg-gray-50 text-text font-medium py-3 px-6 rounded-xl transition-colors cursor-pointer"
-          >
-            {t('cost.startOver')}
-          </button>
         </div>
       </div>
+
+      <p className="text-xs text-text-muted mt-4 leading-relaxed">{t('cost.disclaimer')}</p>
+
+      {savedMessage && (
+        <div className="mt-4 p-3 bg-green-50 text-green-700 rounded-xl text-sm font-medium text-center">
+          {t('quotes.saved')}
+        </div>
+      )}
+
+      <div className="flex flex-col sm:flex-row gap-3 mt-8">
+        <button
+          onClick={() => navigate('/bond')}
+          className="inline-flex items-center justify-center gap-2 text-text-muted hover:text-text font-medium py-3 px-6 rounded-xl transition-colors cursor-pointer"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+          </svg>
+          {t('common.back')}
+        </button>
+        <button
+          onClick={openSaveDialog}
+          className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm flex-1 cursor-pointer"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+          </svg>
+          {t('cost.saveQuote')}
+        </button>
+        <button
+          onClick={handleStartOver}
+          className="inline-flex items-center justify-center gap-2 border border-border hover:bg-gray-50 text-text font-medium py-3 px-6 rounded-xl transition-colors cursor-pointer"
+        >
+          {t('cost.startOver')}
+        </button>
+      </div>
+    </div>
+  )
+
+  return (
+    <div className="flex flex-col items-center">
+      <Stepper currentStep={3} />
+      <WizardLayout
+        form={form}
+        lengthM={length}
+        heightM={height}
+        bondPattern={state.bondPattern}
+        showDiagram={length > 0 && height > 0}
+      />
 
       {showSaveDialog && (
         <SaveDialog

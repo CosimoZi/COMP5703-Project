@@ -9,7 +9,6 @@ const steps = [
   { key: 'start', path: '/' },
   { key: 'dimensions', path: '/dimensions' },
   { key: 'bond', path: '/bond' },
-  { key: 'brickSize', path: '/brick-size' },
   { key: 'cost', path: '/cost' },
 ] as const
 

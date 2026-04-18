@@ -11,9 +11,6 @@ export interface FormState {
   length: string
   height: string
   bondPattern: string
-  brickLength: string
-  brickHeight: string
-  headerWidth: string
   activeQuoteName: string
 }
 
@@ -26,9 +23,6 @@ const initialState: FormState = {
   length: '',
   height: '',
   bondPattern: 'stretcher',
-  brickLength: '23',
-  brickHeight: '7.6',
-  headerWidth: '11',
   activeQuoteName: '',
 }
 
@@ -52,7 +46,13 @@ function loadState(): FormState {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored) {
       const parsed = JSON.parse(stored)
-      return { ...initialState, ...parsed }
+      const merged = { ...initialState, ...parsed }
+      return {
+        length: merged.length ?? '',
+        height: merged.height ?? '',
+        bondPattern: merged.bondPattern || 'stretcher',
+        activeQuoteName: merged.activeQuoteName ?? '',
+      }
     }
   } catch {
     // ignore

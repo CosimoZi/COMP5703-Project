@@ -1,117 +1,57 @@
 import { useRef, useState, useEffect, useMemo } from 'react'
 import { Stage, Layer, Rect, Group } from 'react-konva'
+import { getBond } from '../bonds/registry'
+import type { BrickData } from '../bonds/types'
 
-const MORTAR_MM = 10
-const DEFAULT_BRICK_L = 230
-const DEFAULT_BRICK_H = 76
-const DEFAULT_HEADER_W = 110
 const CANVAS_H = 400
-const BRICK_FILL = '#c1440e'
-const MORTAR_FILL = '#d4d0c8'
+const MORTAR_FILL = '#c9b89a'
+const ADJ_FILL = '#d49050'
+const STRETCHER_PALETTE = [
+  '#b85530',
+  '#a34525',
+  '#c05838',
+  '#9e3f20',
+  '#ba5c35',
+  '#aa4a2c',
+]
+const STROKE_NORMAL = '#6a2208'
+const STROKE_ADJ = '#9a5010'
+const SHEEN_FILL = 'rgba(255,230,180,0.12)'
 
 interface FenceDiagramProps {
   lengthM: number
   heightM: number
   bondPattern?: string
-  brickLengthCm?: number
-  brickHeightCm?: number
-  headerWidthCm?: number
 }
 
-interface BrickData {
-  x: number
-  y: number
-  w: number
-  h: number
+function hashNoise(row: number, index: number): number {
+  const h = Math.sin(row * 91.3 + index * 7.17) * 43758.5453
+  const frac = h - Math.floor(h)
+  return (frac - 0.5) * 0.18
 }
 
-function generateBricks(
-  viewW: number,
-  wallH: number,
-  brickL: number,
-  brickH: number,
-  headerW: number,
-  bond: string,
-  startX: number = 0,
-): BrickData[] {
-  const bricks: BrickData[] = []
-  const endX = startX + viewW
-  const rows = Math.ceil(wallH / (brickH + MORTAR_MM))
+function adjustBrightness(hex: string, amount: number): string {
+  const m = hex.replace('#', '')
+  const r = parseInt(m.substring(0, 2), 16)
+  const g = parseInt(m.substring(2, 4), 16)
+  const b = parseInt(m.substring(4, 6), 16)
+  const d = Math.round(amount * 255)
+  const clamp = (v: number) => Math.max(0, Math.min(255, v + d))
+  const toHex = (v: number) => clamp(v).toString(16).padStart(2, '0')
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`
+}
 
-  for (let r = 0; r < rows; r++) {
-    const y = r * (brickH + MORTAR_MM)
-    const rowH = Math.min(brickH, wallH - y)
-    if (rowH <= 0) break
-
-    if (bond === 'english') {
-      const isHeaderRow = r % 2 === 1
-      const unitW = isHeaderRow ? headerW : brickL
-      const step = unitW + MORTAR_MM
-      const rowOffset = isHeaderRow ? (headerW + MORTAR_MM) / 2 : 0
-      const firstCol = Math.floor((startX - rowOffset) / step) - 1
-      for (let c = firstCol; ; c++) {
-        const wx = c * step + rowOffset
-        if (wx >= endX) break
-        if (wx + unitW <= startX) continue
-        const localX = Math.max(0, wx - startX)
-        const localRight = Math.min(viewW, wx + unitW - startX)
-        const w = localRight - localX
-        if (w > 0) bricks.push({ x: localX, y, w, h: rowH })
-      }
-    } else if (bond === 'flemish') {
-      const stretcherUnit = brickL + MORTAR_MM
-      const headerUnit = headerW + MORTAR_MM
-      const pairW = stretcherUnit + headerUnit
-      if (pairW <= 0) continue
-      const isOddRow = r % 2 === 1
-      const rowOffset = isOddRow ? pairW / 2 : 0
-      const firstPair = Math.floor((startX - rowOffset) / pairW) - 1
-      for (let p = firstPair; ; p++) {
-        const sxBase = p * pairW + rowOffset
-        if (sxBase >= endX) break
-        const sx = sxBase
-        if (sx + brickL > startX && sx < endX) {
-          const localX = Math.max(0, sx - startX)
-          const localRight = Math.min(viewW, sx + brickL - startX)
-          const w = localRight - localX
-          if (w > 0) bricks.push({ x: localX, y, w, h: rowH })
-        }
-        const hx = sxBase + stretcherUnit
-        if (hx + headerW > startX && hx < endX) {
-          const localX = Math.max(0, hx - startX)
-          const localRight = Math.min(viewW, hx + headerW - startX)
-          const w = localRight - localX
-          if (w > 0) bricks.push({ x: localX, y, w, h: rowH })
-        }
-        if (sxBase + pairW >= endX) break
-      }
-    } else {
-      const step = brickL + MORTAR_MM
-      const rowOffset = r % 2 === 1 ? step / 2 : 0
-      const firstCol = Math.floor((startX - rowOffset) / step) - 1
-      for (let c = firstCol; ; c++) {
-        const wx = c * step + rowOffset
-        if (wx >= endX) break
-        if (wx + brickL <= startX) continue
-        const localX = Math.max(0, wx - startX)
-        const localRight = Math.min(viewW, wx + brickL - startX)
-        const w = localRight - localX
-        if (w > 0) bricks.push({ x: localX, y, w, h: rowH })
-      }
-    }
+function brickFill(b: BrickData, idx: number): string {
+  if (b.type === 'adj') return adjustBrightness(ADJ_FILL, hashNoise(b.row, idx))
+  if (b.type === 'half') {
+    const base = b.row % 2 === 0 ? '#6e2c12' : '#7e3418'
+    return adjustBrightness(base, hashNoise(b.row, idx))
   }
-
-  return bricks
+  const base = STRETCHER_PALETTE[b.row % STRETCHER_PALETTE.length]
+  return adjustBrightness(base, hashNoise(b.row, idx))
 }
 
-export default function FenceDiagram({
-  lengthM,
-  heightM,
-  bondPattern,
-  brickLengthCm,
-  brickHeightCm,
-  headerWidthCm,
-}: FenceDiagramProps) {
+export default function FenceDiagram({ lengthM, heightM, bondPattern }: FenceDiagramProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerWidth, setContainerWidth] = useState(0)
 
@@ -119,35 +59,43 @@ export default function FenceDiagram({
     const el = containerRef.current
     if (!el) return
     const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setContainerWidth(entry.contentRect.width)
-      }
+      for (const entry of entries) setContainerWidth(entry.contentRect.width)
     })
     ro.observe(el)
     setContainerWidth(el.clientWidth)
     return () => ro.disconnect()
   }, [])
 
-  const wallW = lengthM * 1000
-  const wallH = heightM * 1000
-  const brickL = brickLengthCm ? brickLengthCm * 10 : DEFAULT_BRICK_L
-  const brickH = brickHeightCm ? brickHeightCm * 10 : DEFAULT_BRICK_H
-  const headerW = headerWidthCm ? headerWidthCm * 10 : DEFAULT_HEADER_W
-  const bond = bondPattern || 'stretcher'
+  const wallL = lengthM * 1000
+  const wallHmm = heightM * 1000
 
-  const scale = CANVAS_H / wallH
+  const bondResult = useMemo(() => {
+    if (!bondPattern || wallL <= 0 || wallHmm <= 0) return null
+    const bond = getBond(bondPattern) ?? getBond('stretcher')
+    if (!bond) return null
+    return bond.generate({ wallL, wallH: wallHmm })
+  }, [bondPattern, wallL, wallHmm])
 
-  const visibleWallW = containerWidth > 0 ? containerWidth / scale : wallW
-  const wallFitsInView = wallW <= visibleWallW
-  const renderW = Math.min(wallW, visibleWallW)
-  const wallStartX = wallFitsInView ? 0 : (wallW - renderW) / 2
+  const renderedW = bondResult?.wallW ?? wallL
+  const renderedH = bondResult?.wallH ?? wallHmm
 
-  const bricks = useMemo(
-    () => generateBricks(renderW, wallH, brickL, brickH, headerW, bond, wallStartX),
-    [renderW, wallH, brickL, brickH, headerW, bond, wallStartX],
-  )
+  const scale = renderedH > 0 ? CANVAS_H / renderedH : 1
 
-  const offsetX = wallFitsInView ? (containerWidth - wallW * scale) / 2 : 0
+  const visibleWallW = containerWidth > 0 ? containerWidth / scale : renderedW
+  const wallFitsInView = renderedW <= visibleWallW
+  const renderW = Math.min(renderedW, visibleWallW)
+  const startX = wallFitsInView ? 0 : (renderedW - renderW) / 2
+  const endX = startX + renderW
+
+  const visibleBricks = useMemo(() => {
+    if (!bondResult) return []
+    return bondResult.bricks.filter((b) => b.x + b.w > startX && b.x < endX)
+  }, [bondResult, startX, endX])
+
+  const offsetX = wallFitsInView ? (containerWidth - renderedW * scale) / 2 : 0
+
+  const strokePx = Math.max(0.5, 0.4 * scale * 4)
+  const sheenH = 3 * scale
 
   if (!containerWidth) {
     return <div ref={containerRef} className="w-full h-8" />
@@ -162,20 +110,39 @@ export default function FenceDiagram({
               x={0}
               y={0}
               width={renderW * scale}
-              height={wallH * scale}
+              height={renderedH * scale}
               fill={MORTAR_FILL}
             />
-            {bricks.map((b, i) => (
-              <Rect
-                key={i}
-                x={b.x * scale}
-                y={b.y * scale}
-                width={b.w * scale}
-                height={b.h * scale}
-                fill={BRICK_FILL}
-                cornerRadius={1}
-              />
-            ))}
+            {visibleBricks.map((b, i) => {
+              const localX = (b.x - startX) * scale
+              const localY = b.y * scale
+              const w = b.w * scale
+              const h = b.h * scale
+              return (
+                <Group key={`${b.row}-${b.x}-${i}`}>
+                  <Rect
+                    x={localX}
+                    y={localY}
+                    width={w}
+                    height={h}
+                    fill={brickFill(b, i)}
+                    stroke={b.type === 'adj' ? STROKE_ADJ : STROKE_NORMAL}
+                    strokeWidth={strokePx}
+                    cornerRadius={0.5}
+                  />
+                  {sheenH > 0.5 && (
+                    <Rect
+                      x={localX}
+                      y={localY}
+                      width={w}
+                      height={Math.min(sheenH, h)}
+                      fill={SHEEN_FILL}
+                      listening={false}
+                    />
+                  )}
+                </Group>
+              )
+            })}
           </Group>
         </Layer>
       </Stage>
