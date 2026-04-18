@@ -11,7 +11,6 @@
     "start": "开始",
     "dimensions": "尺寸",
     "bond": "样式",
-    "brickSize": "砖块",
     "cost": "费用"
   },
   "common": {
@@ -38,19 +37,11 @@
     "description": "选择围栏的砖块砌筑样式。",
     "stretcher": "顺砖砌法",
     "stretcherDesc": "最常见的砌法。每行砖块错开半块。",
-    "english": "英式砌法",
-    "englishDesc": "顺砖行与丁砖行交替排列，非常坚固。",
-    "flemish": "佛兰德砌法",
-    "flemishDesc": "每行中顺砖与丁砖交替排列，外观经典。"
+    "comingSoon": "更多砌法即将推出。"
   },
-  "brickSize": {
-    "heading": "砖块尺寸",
-    "description": "设置砖块的尺寸（单位：厘米）。",
-    "stretcherLength": "顺砖长度",
-    "brickHeight": "砖块高度",
-    "headerWidth": "丁砖宽度",
-    "unit": "厘米",
-    "calculate": "计算费用"
+  "diagram": {
+    "previewTitle": "墙体预览",
+    "awaitingDimensions": "请先输入墙体尺寸以查看预览。"
   },
   "cost": {
     "heading": "费用估算",

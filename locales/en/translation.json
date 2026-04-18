@@ -11,7 +11,6 @@
     "start": "Start",
     "dimensions": "Dimensions",
     "bond": "Pattern",
-    "brickSize": "Brick Size",
     "cost": "Cost"
   },
   "common": {
@@ -38,19 +37,11 @@
     "description": "Choose a brick bond pattern for your fence.",
     "stretcher": "Stretcher Bond",
     "stretcherDesc": "Most common pattern. Bricks staggered by half in each row.",
-    "english": "English Bond",
-    "englishDesc": "Alternating rows of stretchers and headers. Very strong.",
-    "flemish": "Flemish Bond",
-    "flemishDesc": "Stretchers and headers alternate within each row. Classic look."
+    "comingSoon": "More patterns coming soon."
   },
-  "brickSize": {
-    "heading": "Brick Dimensions",
-    "description": "Set the size of your bricks in centimeters.",
-    "stretcherLength": "Stretcher Length",
-    "brickHeight": "Brick Height",
-    "headerWidth": "Header Width",
-    "unit": "cm",
-    "calculate": "Calculate Cost"
+  "diagram": {
+    "previewTitle": "Wall Preview",
+    "awaitingDimensions": "Enter wall dimensions to see a preview."
   },
   "cost": {
     "heading": "Cost Estimate",
