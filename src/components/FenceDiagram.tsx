@@ -3,7 +3,8 @@ import { Stage, Layer, Rect, Group } from 'react-konva'
 import { getBond } from '../bonds/registry'
 import type { BrickData } from '../bonds/types'
 
-const CANVAS_H = 400
+const MIN_CANVAS_H = 320
+const MAX_CANVAS_H = 720
 const MORTAR_FILL = '#c9b89a'
 const ADJ_FILL = '#d49050'
 const STRETCHER_PALETTE = [
@@ -79,9 +80,24 @@ export default function FenceDiagram({ lengthM, heightM, bondPattern }: FenceDia
   const renderedW = bondResult?.wallW ?? wallL
   const renderedH = bondResult?.wallH ?? wallHmm
 
-  const scale = renderedH > 0 ? CANVAS_H / renderedH : 1
+  const { scale, canvasH } = useMemo(() => {
+    if (containerWidth <= 0 || renderedW <= 0 || renderedH <= 0) {
+      return { scale: 1, canvasH: MIN_CANVAS_H }
+    }
+    const fitWidthScale = containerWidth / renderedW
+    const naturalH = renderedH * fitWidthScale
+    if (naturalH > MAX_CANVAS_H) {
+      const s = MAX_CANVAS_H / renderedH
+      return { scale: s, canvasH: MAX_CANVAS_H }
+    }
+    if (naturalH < MIN_CANVAS_H) {
+      const s = MIN_CANVAS_H / renderedH
+      return { scale: s, canvasH: MIN_CANVAS_H }
+    }
+    return { scale: fitWidthScale, canvasH: naturalH }
+  }, [containerWidth, renderedW, renderedH])
 
-  const visibleWallW = containerWidth > 0 ? containerWidth / scale : renderedW
+  const visibleWallW = containerWidth > 0 && scale > 0 ? containerWidth / scale : renderedW
   const wallFitsInView = renderedW <= visibleWallW
   const renderW = Math.min(renderedW, visibleWallW)
   const startX = wallFitsInView ? 0 : (renderedW - renderW) / 2
@@ -103,7 +119,7 @@ export default function FenceDiagram({ lengthM, heightM, bondPattern }: FenceDia
 
   return (
     <div ref={containerRef} className="w-full relative">
-      <Stage width={containerWidth} height={CANVAS_H}>
+      <Stage width={containerWidth} height={canvasH}>
         <Layer>
           <Group x={offsetX}>
             <Rect

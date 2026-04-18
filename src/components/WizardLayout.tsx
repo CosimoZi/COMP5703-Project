@@ -38,7 +38,7 @@ export default function WizardLayout({
                 />
               </div>
             ) : (
-              <div className="flex items-center justify-center rounded-xl border border-dashed border-border/70 bg-surface-alt h-64 sm:h-80 lg:h-96 text-sm text-text-muted text-center px-4">
+              <div className="flex items-center justify-center rounded-xl border border-dashed border-border/70 bg-surface-alt h-80 sm:h-96 lg:h-[28rem] text-sm text-text-muted text-center px-4">
                 {t('diagram.awaitingDimensions')}
               </div>
             )}

@@ -17,7 +17,7 @@ function AppContent() {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="max-w-[100rem] mx-auto px-4 py-3 flex items-center justify-between">
           <h1 className="text-lg font-bold text-text truncate">
             {t('app.title')}
           </h1>
@@ -36,7 +36,7 @@ function AppContent() {
         </div>
       </header>
 
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8">
+      <main className="flex-1 max-w-[100rem] w-full mx-auto px-4 py-8">
         <Routes>
           <Route path="/" element={<StartPage />} />
           <Route path="/dimensions" element={<DimensionsPage />} />
@@ -46,7 +46,7 @@ function AppContent() {
       </main>
 
       <footer className="border-t border-border bg-white">
-        <div className="max-w-6xl mx-auto px-4 py-4 text-center text-xs text-text-muted">
+        <div className="max-w-[100rem] mx-auto px-4 py-4 text-center text-xs text-text-muted">
           {t('app.title')}
         </div>
       </footer>
