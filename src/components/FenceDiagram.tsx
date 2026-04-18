@@ -100,7 +100,7 @@ export default function FenceDiagram({ lengthM, heightM, bondPattern }: FenceDia
   const visibleWallW = containerWidth > 0 && scale > 0 ? containerWidth / scale : renderedW
   const wallFitsInView = renderedW <= visibleWallW
   const renderW = Math.min(renderedW, visibleWallW)
-  const startX = wallFitsInView ? 0 : (renderedW - renderW) / 2
+  const startX = 0
   const endX = startX + renderW
 
   const visibleBricks = useMemo(() => {
@@ -108,7 +108,7 @@ export default function FenceDiagram({ lengthM, heightM, bondPattern }: FenceDia
     return bondResult.bricks.filter((b) => b.x + b.w > startX && b.x < endX)
   }, [bondResult, startX, endX])
 
-  const offsetX = wallFitsInView ? (containerWidth - renderedW * scale) / 2 : 0
+  const offsetX = 0
 
   const strokePx = Math.max(0.5, 0.4 * scale * 4)
   const sheenH = 3 * scale
@@ -163,10 +163,7 @@ export default function FenceDiagram({ lengthM, heightM, bondPattern }: FenceDia
         </Layer>
       </Stage>
       {!wallFitsInView && (
-        <>
-          <div className="absolute top-0 left-0 bottom-0 w-12 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-          <div className="absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent pointer-events-none" />
-        </>
+        <div className="absolute top-0 right-0 bottom-0 w-16 bg-gradient-to-l from-white to-transparent pointer-events-none" />
       )}
     </div>
   )
