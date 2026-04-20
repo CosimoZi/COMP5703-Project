@@ -37,6 +37,14 @@
     "description": "选择围栏的砖块砌筑样式。",
     "stretcher": "顺砖砌法",
     "stretcherDesc": "最常见的砌法。每行砖块错开半块。",
+    "stack": "叠砌法",
+    "stackDesc": "砖块直接叠放在彼此上方。简单而坚固。",
+    "header": "丁砖砌法",
+    "headerDesc": "所有丁砖以长边排列。外观均匀且坚固。",
+    "english": "英式砌法",
+    "englishDesc": "顺砖行与丁砖行交替排列。非常坚固。",
+    "flemishGarden": "佛兰芒花园墙砌法",
+    "flemishGardenDesc": "丁砖与顺砖交错排列，适合花园墙。",
     "comingSoon": "更多砌法即将推出。"
   },
   "diagram": {

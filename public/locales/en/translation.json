@@ -37,6 +37,14 @@
     "description": "Choose a brick bond pattern for your fence.",
     "stretcher": "Stretcher Bond",
     "stretcherDesc": "Most common pattern. Bricks staggered by half in each row.",
+    "stack": "Stack Bond",
+    "stackDesc": "Bricks stacked directly on top of each other. Simple and strong.",
+    "header": "Header Bond",
+    "headerDesc": "All headers laid lengthwise. Strong and uniform appearance.",
+    "english": "English Bond",
+    "englishDesc": "Alternating courses of stretchers and headers. Very strong.",
+    "flemishGarden": "Flemish Garden Bond",
+    "flemishGardenDesc": "Shifted headers and stretchers in a garden wall layout.",
     "comingSoon": "More patterns coming soon."
   },
   "diagram": {
